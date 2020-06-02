@@ -81,7 +81,9 @@ void Query_Processing::scan_node(float*& query, std::vector<Node*>& nodes, unsig
 	std::pair<int, float> furthest_node = std::make_pair(-1, -1);
 
 	//if we already have enough nodes to start replacing, find the furthest node
-	if (next_level_nodes.size() >= b) furthest_node = find_furthest_node(query, next_level_nodes);
+	if (next_level_nodes.size() >= b) {
+		furthest_node = find_furthest_node(query, next_level_nodes);
+	}
 
 	for (Node* node : nodes)
 	{
@@ -106,6 +108,43 @@ void Query_Processing::scan_node(float*& query, std::vector<Node*>& nodes, unsig
 	}
 }
 
+/*
+ * uses an accumulator nearest_points to store the result
+ */
+void Query_Processing::scan_leaf_node(float*& query, std::vector<Point>& points, const unsigned int k, std::vector<std::pair<unsigned int, float>>& nearest_points)
+{
+	std::pair<int, float> max = std::make_pair(-1, std::numeric_limits<float>::max());
+	//if we already have enough points to start replacing, find the furthest point
+	if (nearest_points.size() >= k) {
+		max = nearest_points[index_to_max_element(nearest_points)];
+	}
+
+	for (Point& point : points)
+	{
+		//not enough points yet, just add
+		if (nearest_points.size() < k)
+		{
+			float dist = g_distance_function(query, point.descriptor);
+			nearest_points.emplace_back(point.id, dist);
+
+			//next iteration we will start replacing, compute the furthest cluster
+			if (nearest_points.size() == k) max = nearest_points[index_to_max_element(nearest_points)];
+		}
+		else
+		{
+			//only replace if nearer
+			float dist = g_distance_function(query, point.descriptor);
+			if (dist < max.second) {
+				//replace furthest with new
+				nearest_points[index_to_max_element(nearest_points)] = std::make_pair(point.id, dist);
+
+				//the furthest point has been replaced, find the new furthest
+				max = nearest_points[index_to_max_element(nearest_points)];
+			}
+		}
+	}
+}
+
 std::pair<int, float> Query_Processing::find_furthest_node(float*& query, std::vector<Node*>& nodes)
 {
 	std::pair<int, float> worst = std::make_pair(-1, -1);
@@ -119,43 +158,6 @@ std::pair<int, float> Query_Processing::find_furthest_node(float*& query, std::v
 	}
 
 	return worst;
-}
-
-/*
- * uses an accumulator nearest_points to store the result
- */
-void Query_Processing::scan_leaf_node(float*& query, std::vector<Point>& points, const unsigned int k, std::vector<std::pair<unsigned int, float>>& nearest_points)
-{
-	float max_distance = FLOAT_MAX;
-	//if we already have enough points to start replacing, find the furthest point
-	if (nearest_points.size() >= k) {
-		max_distance = nearest_points[index_to_max_element(nearest_points)].second;
-	}
-
-	for (Point& point : points)
-	{
-		//not enough points yet, just add
-		if (nearest_points.size() < k)
-		{
-			float dist = g_distance_function(query, point.descriptor);
-			nearest_points.emplace_back(point.id, dist);
-
-			//next iteration we will start replacing, compute the furthest cluster
-			if (nearest_points.size() == k) max_distance = nearest_points[index_to_max_element(nearest_points)].second;
-		}
-		else
-		{
-			//only replace if nearer
-			float dist = g_distance_function(query, point.descriptor);
-			if (dist < max_distance) {
-				const unsigned int max_index = index_to_max_element(nearest_points);
-				nearest_points[max_index] = std::make_pair(point.id, dist);
-
-				//the furthest point has been replaced, find the new furthest
-				max_distance = nearest_points[index_to_max_element(nearest_points)].second;
-			}
-		}
-	}
 }
 
 unsigned int Query_Processing::index_to_max_element(std::vector<std::pair<unsigned int, float>>& point_pairs)
