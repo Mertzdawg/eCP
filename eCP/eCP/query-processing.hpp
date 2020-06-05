@@ -28,7 +28,7 @@ public:
 	* @param b amount of leaves to search
 	* @return vector of (index,distance) pairs sorted by lowest distance
 	*/
-	static std::vector<std::pair<unsigned int, float>> k_nearest_neighbors(std::vector<Node*>& root, float*& query, unsigned int k, unsigned int b, unsigned int L);
+	static std::pair<std::vector<unsigned int>, std::vector<float>> k_nearest_neighbors(std::vector<Node*>& root, float*& query, unsigned int k, unsigned int b, unsigned int L);
 
 private:
 
@@ -65,19 +65,12 @@ private:
 	* @param k amount of nearest points to return
 	* @param nearest_points accumulator of k nearest neighbors
 	*/
-	static void scan_leaf_node(float*& query, std::vector<Point>& points, const unsigned int k, std::vector<std::pair<unsigned int, float>>& nearest_points);
+	static void scan_leaf_node(float*& query, std::vector<Point>& points, const unsigned int k, std::pair<std::vector<unsigned int>, std::vector<float>>& nearest_points);
 
 	/**
 	* find the index of the pair with the largest distance
 	* @param point_pairs vector of tuples of (index,distance)
 	* @return index to element with largest distance
 	*/
-	static unsigned int index_to_max_element(std::vector<std::pair<unsigned int, float>>& point_pairs);
-
-	/*
-	 * comparator for sorting
-	 * @param a tuple a (index, distance)
-	 * @param b tuple b (index, distance)
-	 */
-	static bool smallest_distance(std::pair<unsigned int, float>& a, std::pair<unsigned int, float>& b);
+	static unsigned int index_to_max_element(std::pair<std::vector<unsigned int>, std::vector<float>>& point_pairs);
 };

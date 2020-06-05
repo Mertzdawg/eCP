@@ -54,18 +54,5 @@ std::pair<std::vector<unsigned int>, std::vector<float>> query(Index* index, std
 	//internal data structure uses float pointer instead of vectors
 	float* q = &query[0];
 
-	auto nearest_points = Query_Processing::k_nearest_neighbors(index->top_level, q, k, b, index->L);
-
-	//unzip since id are only needed for ANN-Benchmarks
-	std::vector<unsigned int> nearest_indexes = {};
-	std::vector<float> nearest_dist = {};
-
-	for (auto it = std::make_move_iterator(nearest_points.begin()),
-		end = std::make_move_iterator(nearest_points.end()); it != end; ++it)
-	{
-		nearest_indexes.push_back(it->first);
-		nearest_dist.push_back(it->second);
-	}
-
-	return make_pair(nearest_indexes, nearest_dist);
+	return Query_Processing::k_nearest_neighbors(index->top_level, q, k, b, index->L);
 }

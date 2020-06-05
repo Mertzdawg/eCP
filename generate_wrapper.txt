@@ -1,6 +1,6 @@
 cd eCP/eCP
-python3 file_combine.py --files eCP.cpp distance.cpp pre-processing.cpp query-processing.cpp --out combined.cpp
-python3 file_combine.py --files data_structure.hpp eCP.hpp pre-processing.hpp query-processing.hpp --out combined.hpp
+python3 file_combine.py --files eCP.cpp distance.cpp pre-processing.cpp query-processing.cpp sort.cpp --out combined.cpp
+python3 file_combine.py --files data_structure.hpp eCP.hpp pre-processing.hpp query-processing.hpp sort.hpp --out combined.hpp
 cd ..
 cd ..
 rm -rf __pycache__

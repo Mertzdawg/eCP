@@ -25,8 +25,8 @@ float euclidean_distance(float*& a, float*& b);
 float angular_distance(float*& a, float*& b);
 
 // structs
-#define FLOAT_MAX std::numeric_limits<float>::max();
-#define FLOAT_MIN std::numeric_limits<float>::min();
+#define FLOAT_MAX std::numeric_limits<float>::max()
+#define FLOAT_MIN std::numeric_limits<float>::min()
 
 // global variables
 extern float (*g_distance_function)(float*&, float*&);

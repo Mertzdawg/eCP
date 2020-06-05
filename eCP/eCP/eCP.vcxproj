@@ -155,12 +155,14 @@
     <ClCompile Include="distance.cpp" />
     <ClCompile Include="query-processing.cpp" />
     <ClCompile Include="pre-processing.cpp" />
+    <ClCompile Include="sort.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data_structure.hpp" />
     <ClInclude Include="eCP.hpp" />
     <ClInclude Include="pre-processing.hpp" />
     <ClInclude Include="query-processing.hpp" />
+    <ClInclude Include="sort.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
