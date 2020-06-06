@@ -17,7 +17,7 @@ Node* Query_Processing::find_nearest_leaf(float*& query, std::vector<Node*>& nod
 			return Pre_Processing::find_nearest_node(best_cluster->children, query);
 		}
 
-		const auto dist = g_distance_function(query, cluster->get_representative());
+		const auto dist = g_distance_function(query, cluster->representative);
 		if (dist < closest)
 		{
 			closest = dist;
@@ -96,7 +96,7 @@ void Query_Processing::scan_node(float*& query, std::vector<Node*>& nodes, unsig
 		else
 		{
 			//only replace if better
-			if (g_distance_function(query, node->get_representative()) < furthest_node.second) {
+			if (g_distance_function(query, node->representative) < furthest_node.second) {
 				next_level_nodes[furthest_node.first] = node;
 
 				//the furthest node has been replaced, find the new furthest
@@ -110,7 +110,7 @@ std::pair<int, float> Query_Processing::find_furthest_node(float*& query, std::v
 {
 	std::pair<int, float> worst = std::make_pair(-1, -1);
 	for (unsigned int i = 0; i < nodes.size(); i++) {
-		const float dst = g_distance_function(query, nodes[i]->get_representative());
+		const float dst = g_distance_function(query, nodes[i]->representative);
 
 		if (dst > worst.second) {
 			worst.first = i;

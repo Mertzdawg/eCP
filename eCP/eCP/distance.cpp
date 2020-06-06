@@ -9,7 +9,7 @@ float euclidean_distance(float*& a, float*& b)
 		sum += pow * pow;
 	}
 
-	return sum;
+	return sqrt(sum);
 }
 
 float angular_distance(float*& a, float*& b)
@@ -22,8 +22,8 @@ float angular_distance(float*& a, float*& b)
 		d_a += a[i] * a[i];
 		d_b += b[i] * b[i];
 	}
-
+	const float pi = 3.14159265358979323846;
 	const float cosine_similarity = (mul / sqrt(d_a * d_b));
 
-	return acos(cosine_similarity);
+	return acos(cosine_similarity) / pi;
 }

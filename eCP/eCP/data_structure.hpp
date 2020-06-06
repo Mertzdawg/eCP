@@ -65,16 +65,17 @@ struct Point {
  * @param points points in high-dimensional space. First element is always the node representative
  */
 struct Node {
+	float* representative;
 	std::vector<Node*> children;
 	std::vector<Point> points;
 
 	Node(Point& p) {
-		points.reserve(1);
-		points.push_back(p);
+		representative = p.descriptor;
 	}
 
 	~Node()
 	{
+		//delete representative;
 		for (Node* child : children)
 		{
 			delete child;
@@ -92,11 +93,6 @@ struct Node {
 	bool is_leaf() const
 	{
 		return children.empty();
-	}
-
-	float*& get_representative()
-	{
-		return points[0].descriptor;
 	}
 };
 

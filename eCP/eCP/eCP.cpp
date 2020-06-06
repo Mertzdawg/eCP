@@ -37,11 +37,9 @@ Index* eCP_Index(const std::vector<std::vector<float>> descriptors, unsigned int
 	{
 		g_distance_function = &euclidean_distance;
 	}
-	//initial sample size for building index - n^L/L+1 for initial representatives
-	const auto sample_size = ceil(pow(descriptors.size(), ((L / (L + 1.00)))));
 
 	std::vector<Node*> empty_index_root = Pre_Processing::create_index(descriptor_points, L);
-	auto index_root = Pre_Processing::insert_points(empty_index_root, descriptor_points, sample_size);
+	auto index_root = Pre_Processing::insert_points(empty_index_root, descriptor_points, 0);
 
 	return new Index(L, index_root, descriptor_points);
 }

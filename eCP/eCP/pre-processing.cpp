@@ -20,43 +20,59 @@ std::vector<Node*> Pre_Processing::create_index(std::vector<Point>& dataset, uns
 		level_sizes.push_back(level_l);
 	}
 	level_sizes.shrink_to_fit();
-
+	
+	//generate random indexes
+	std::vector<std::vector<unsigned int>> level_indexes;
+	level_indexes.reserve(L);
+	std::vector<unsigned int>* curr_partition = nullptr;
+	for (auto && size : level_sizes)
+	{
+		//bottom level
+		if (curr_partition == nullptr)
+		{
+			level_indexes.push_back(generate_random_numbers(size, 0, dataset.size()));
+			curr_partition = &level_indexes[0];
+		} else
+		{
+			level_indexes.push_back(random_vector_numbers(size,*curr_partition));
+			curr_partition = &level_indexes[level_indexes.size() - 1];
+		}
+	}
+	//reverse level list for increasing level numbering
+	reverse(level_indexes.begin(), level_indexes.end());
+	
 	//build top level, using first n^(1/(L+1)) points of data set
 	std::vector<Node*> top_level;
-
+	
 	top_level.reserve(level_sizes[level_sizes.size() - 1]);
-	for (unsigned int i = 0; i < level_sizes[level_sizes.size() - 1]; ++i)
+	for (auto && top_level_leader : level_indexes[0])
 	{
-		top_level.emplace_back(new Node(dataset[i]));
+		top_level.emplace_back(new Node(dataset[top_level_leader]));
 	}
 	top_level.shrink_to_fit();
-
-	//reverse level list for increasing level numbering
-	reverse(level_sizes.begin(), level_sizes.end());
-
+	
 	//insert each level of clusters to form index - skip already built top level
 	for (unsigned int level = 1; level < L; ++level)
 	{
 		//go through each level
-		for (unsigned int i = 0; i < level_sizes[level]; ++i)
+		for (unsigned int leader_index : level_indexes[level])
 		{
-			auto* upper_level_nearest = find_nearest_node(top_level, dataset[i].descriptor);
+			auto* upper_level_nearest = find_nearest_node(top_level, dataset[leader_index].descriptor);
 			// -1 since top level has been compared with
-			auto* lower_level_nearest = find_nearest_leaf_from_level(dataset[i].descriptor, upper_level_nearest, level - 1);
+			auto* lower_level_nearest = find_nearest_leaf_from_level(dataset[leader_index].descriptor, upper_level_nearest, level - 1);
 
+			const unsigned int avg_rep = ceil(pow(dataset.size(), (1.00 / (L + 1.00))));
 			//at bottom level
 			if (level == L - 1)
 			{
-				auto* leaf = new Node(dataset[i]);
+				auto* leaf = new Node(dataset[leader_index]);
 				//each leaf cluster always represents, on average, n^( 1/(L+1) ) point
-				const unsigned int avg_rep = ceil(pow(dataset.size(), (1.00 / (L + 1.00))));
 				leaf->points.reserve(avg_rep);
 				lower_level_nearest->children.emplace_back(leaf);
 			}
 			else
 			{
-				auto* node = new Node(dataset[i]);
-				const unsigned int avg_rep = ceil(pow(dataset.size(), (1.00 / (L + 1.00))));
+				auto* node = new Node(dataset[leader_index]);
 				node->children.reserve(avg_rep);
 				lower_level_nearest->children.emplace_back(node);
 			}
@@ -65,6 +81,34 @@ std::vector<Node*> Pre_Processing::create_index(std::vector<Point>& dataset, uns
 
 	return top_level;
 }
+
+std::vector<unsigned int> Pre_Processing::generate_random_numbers(const unsigned int n, const unsigned int range_from, const unsigned int range_to)
+{
+	std::vector<unsigned int> values(range_to - range_from);
+
+	// values now has range_from to range_to
+	std::generate(values.begin(), values.end(), [value = range_from]() mutable { return value++; });
+
+	// obtain random order
+	std::shuffle(values.begin(), values.end(), std::mt19937{ std::random_device{}() });
+
+	//now we have the n random numbers
+	values.resize(n);
+	
+	return values;
+}
+
+std::vector<unsigned int> Pre_Processing::random_vector_numbers(const unsigned int n, std::vector<unsigned int> numbers)
+{
+	// obtain random order
+	std::shuffle(numbers.begin(), numbers.end(), std::mt19937{ std::random_device{}() });
+
+	//now we have the n random numbers
+	numbers.resize(n);
+
+	return numbers;
+}
+
 
 std::vector<Node*> Pre_Processing::insert_points(std::vector<Node*>& index_top_level, std::vector<Point>& points, unsigned int from_index)
 {
@@ -84,7 +128,7 @@ Node* Pre_Processing::find_nearest_node(std::vector<Node*>& nodes, float*& query
 	//compare distance to every representative
 	for (auto* node : nodes)
 	{
-		const float distance = g_distance_function(query, node->get_representative());
+		const float distance = g_distance_function(query, node->representative);
 		if (distance <= nearest)
 		{
 			nearest = distance;

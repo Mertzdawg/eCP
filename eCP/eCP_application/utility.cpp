@@ -78,7 +78,7 @@ void print_cluster(Node& c, const unsigned int d)
 {
 	if (g_vector_dimensions < 5)
 	{
-		auto p = Point(c.get_representative(), -1);
+		auto p = Point(c.representative, -1);
 		print_point(p);
 	}
 
