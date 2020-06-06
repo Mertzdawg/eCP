@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 
 /**
  * @file sort.cpp
@@ -13,7 +14,5 @@ public:
 
     static void quickSort(std::pair<std::vector<unsigned int>, std::vector<float>>& arr, int low, int high);
 private:
-    static void swap(unsigned int a, unsigned int b, std::pair<std::vector<unsigned int>, std::vector<float>>& arr);
-
     static int partition(std::pair<std::vector<unsigned int>, std::vector<float>>& arr, int low, int high);
 };

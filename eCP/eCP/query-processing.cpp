@@ -42,6 +42,8 @@ std::pair<std::vector<unsigned int>, std::vector<float>> Query_Processing::k_nea
 		scan_leaf_node(query, b_nearest_cluster->points, k, k_nearest_points);
 	}
 
+	std::pair<std::vector<unsigned int>, std::vector<float>> test;
+
 	//sort by distance in ascending order
 	Sort::sort(k_nearest_points);
 

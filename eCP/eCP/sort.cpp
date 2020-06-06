@@ -3,17 +3,6 @@
 //https://www.geeksforgeeks.org/cpp-program-for-quicksort/
 
 
-void Sort::swap(unsigned int a, unsigned int b, std::pair<std::vector<unsigned int>, std::vector<float>>& arr)
-{
-    int tmp = arr.first[a];
-    arr.first[a] = arr.first[b];
-    arr.first[b] = tmp;
-
-    tmp = arr.second[a];
-    arr.second[a] = arr.second[b];
-    arr.second[b] = tmp;
-}
-
 int Sort::partition(std::pair<std::vector<unsigned int>, std::vector<float>>& arr, int low, int high)
 {
     int pivot = arr.second[high];
@@ -24,10 +13,12 @@ int Sort::partition(std::pair<std::vector<unsigned int>, std::vector<float>>& ar
         if (arr.second[j] <= pivot)
         {
             i++;
-            swap(i, j, arr);
+            std::swap(arr.first[i], arr.first[j]);
+            std::swap(arr.second[i], arr.second[j]);
         }
     }
-    swap(i + 1, high, arr);
+    std::swap(arr.first[i + 1], arr.first[high]);
+    std::swap(arr.second[i + 1], arr.second[high]);
     return (i + 1);
 }
 
