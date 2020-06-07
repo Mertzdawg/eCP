@@ -8,8 +8,8 @@ int main()
 	const int l = 2;		//L parameter - number of levels in index
 	const int metric = 0;	//Distance metric - 0 = euclidean - 1 = angular
 	const int k = 5;		//# points to return
-	const int b = 5;		//# clusters to search
-	const int p = 10000;	//# of vectors
+	const int b = 2;		//# clusters to search
+	const int p = 100000;	//# of vectors
 	const int d = 3;		//dimensions of vector
 	const int r = 100;		//upper bound of generated vectors
 	const bool debug = true;

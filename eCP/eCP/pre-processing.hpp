@@ -23,14 +23,6 @@ public:
 	*/
 	static std::vector<Node*> create_index(std::vector<Point>& dataset, unsigned int L);
 
-
-
-	/*
-	* generate vector of n values in range 0 to n
-	*/
-	static std::vector<unsigned> generate_random_numbers(const unsigned n, const unsigned range_from, const unsigned range_to);
-	static std::vector<unsigned> random_vector_numbers(const unsigned n, std::vector<unsigned> numbers);
-
 	/**
 	* insert a collection of points into the cluster index
 	* @param index_top_level index to insert points into
@@ -56,4 +48,12 @@ private:
 	* @return nearest leaf to query point
 	*/
 	static Node* find_nearest_leaf_from_level(float*& query, Node*& node, unsigned int depth);
+
+	/*
+	* generate vector of n values in range 0 to n
+	*/
+	static std::vector<unsigned> generate_random_numbers(const unsigned n, const unsigned range_from, const unsigned range_to);
+	static std::vector<unsigned> random_vector_numbers(const unsigned n, std::vector<unsigned> numbers);
+
+	static void shrink_node_children(std::vector<Node*>& nodes);
 };

@@ -109,6 +109,23 @@ std::vector<unsigned int> Pre_Processing::random_vector_numbers(const unsigned i
 	return numbers;
 }
 
+void Pre_Processing::shrink_node_children(std::vector<Node*>& nodes)
+{
+	if (nodes[0]->is_leaf()) {
+		for (Node* n : nodes)
+		{
+			n->points.shrink_to_fit();
+		}
+		//at bottom
+		return;
+	}
+	
+	for (Node* n : nodes)
+	{
+		n->children.shrink_to_fit();
+		shrink_node_children(n->children);
+	}
+}
 
 std::vector<Node*> Pre_Processing::insert_points(std::vector<Node*>& index_top_level, std::vector<Point>& points, unsigned int from_index)
 {
@@ -118,6 +135,9 @@ std::vector<Node*> Pre_Processing::insert_points(std::vector<Node*>& index_top_l
 
 		nearest->points.push_back(points[i]);
 	}
+
+	shrink_node_children(index_top_level);
+	
 	return index_top_level;
 }
 
